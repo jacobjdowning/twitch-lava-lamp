@@ -15,6 +15,10 @@ const animationDuration = 1000;
 const highlightDuration = 10000;
 const heartbeatInterval = 60000;
 
+var lastAnim;
+var lastTimeout;
+
+
 function authUrl() {
 	var url = "https://id.twitch.tv/oauth2/authorize?response_type=token"+
 			"&client_id="+clientId+
@@ -24,6 +28,7 @@ function authUrl() {
 	return url;
 }
 
+
 function parseHash(hash) {
 	var marker = "#access_token=";
 	var amp = "&"
@@ -31,8 +36,7 @@ function parseHash(hash) {
 	hash = hash.substring(start+marker.length);
 	var end = hash.search(amp);
 	hash = hash.substring(0, end);
-	return hash;
-	
+	return hash;	
 }
 
 function promiseSocket(uri) {
@@ -43,8 +47,7 @@ function promiseSocket(uri) {
 	})
 }
 
-function findChannel(){ // currently named incorrectly!!!!
-	console.log("token: " + sessionStorage.token)
+function findChannel(){
 	var headers = new Headers({
 		'Accept': 'application/vnd.twitchtv.v5+json',
 		'Client-ID': clientId,
@@ -118,15 +121,20 @@ function animateLava(){
 			.querySelectorAll(".lava .top, .lava li, .lava .bottom");
 
 	blobs.forEach(blob => {
-		var animation = blob.animate(keyframes, animationDuration);
-		animation.onfinish = () => {
-			blob.style.backgroundColor = "#77E533"
-			setTimeout(() => {
-				blob.animate(keyframes, {duration:animationDuration, direction:"reverse"})
-				.onfinish = () => blob.style.backgroundColor = "#e54833";
-			},
-			highlightDuration)
-		};
+		if(!(typeof blob.animation == 'object' && blob.animation.currentTime != null)){
+			blob.animation = blob.animate(keyframes, animationDuration);
+			blob.animation.onfinish = () => {
+				blob.style.backgroundColor = "#77E533"
+				if(typeof blob.timeout == 'num'){
+					clearTimeout(blob.timeout);
+				}
+				blob.timeout = setTimeout(() => {
+					blob.animate(keyframes, {duration:animationDuration, direction:"reverse"})
+					.onfinish = () => blob.style.backgroundColor = "#e54833";
+				},
+				highlightDuration)
+			};
+		}
 	});
 }
 
@@ -139,5 +147,3 @@ function main() {
 		connect();
 	}
 }
-
-main();
