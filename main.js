@@ -11,7 +11,7 @@
 const clientId = '1tkm4mk7k44j913wfap81tqallsm0q'
 // const redirectURI = 'http://localhost:5000';
 const redirectURI = 'http://jacobjdowning.github.io/twitch-lava-lamp/'
-const scope = 'whispers:read user_read';
+const scope = 'bits:read user_read';
 const forceVerify = 'true';
 const animationDuration = 1000;
 const highlightDuration = 10000;
@@ -96,7 +96,7 @@ function listen(id, socket) {
 	var message = {
 		"type": "LISTEN",
 		"data":{
-			"topics": ["whispers."+id.toString()],
+			"topics": ["channel-bits-events-v2."+id.toString()],
 			"auth_token": sessionStorage.token
 		}
 	}
