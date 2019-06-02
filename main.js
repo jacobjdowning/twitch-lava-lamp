@@ -4,6 +4,8 @@
 // handle bits during animation
 // handle disconnects
 // use two sets of colours for lava
+// smooth animation when switching directions
+// gracefully deal with bad location hash
 
 // const clientId = '9a201y5ou70sxvzs06aq4wki2k5gyq'; 
 const clientId = '1tkm4mk7k44j913wfap81tqallsm0q'
@@ -109,7 +111,18 @@ function displayAuth() {
 	auth.getElementsByTagName('a')[0].setAttribute('href', authUrl());
 }
 
+function animateLavaBack(blob){
+	return setTimeout(() => {
+					blob.timeout = null;
+					blob.animate(keyframes, {duration:animationDuration, direction:"reverse"})
+					.onfinish = () => {
+						blob.style.backgroundColor = "#e54833"
+					};
+			}, highlightDuration);
+}
+
 function animateLava(){
+	console.log("start animation");
 	keyframes = [{
 		backgroundColor:"#e54833"
 	},
@@ -121,18 +134,19 @@ function animateLava(){
 			.querySelectorAll(".lava .top, .lava li, .lava .bottom");
 
 	blobs.forEach(blob => {
-		if(!(typeof blob.animation == 'object' && blob.animation.currentTime != null)){
+		if(blob.timeout != null){
+			clearTimeout(blob.timeout);
+			blob.timeout = animateLavaBack(blob);
+		}
+		if(!(typeof blob.animation == 'object' && blob.animation.currentTime != animationDuration) 
+			&& blob.timeout == null){
 			blob.animation = blob.animate(keyframes, animationDuration);
 			blob.animation.onfinish = () => {
 				blob.style.backgroundColor = "#77E533"
-				if(typeof blob.timeout == 'num'){
+				if(typeof blob.timeout == 'number'){
 					clearTimeout(blob.timeout);
 				}
-				blob.timeout = setTimeout(() => {
-					blob.animate(keyframes, {duration:animationDuration, direction:"reverse"})
-					.onfinish = () => blob.style.backgroundColor = "#e54833";
-				},
-				highlightDuration)
+				blob.timeout = animateLavaBack(blob);
 			};
 		}
 	});
