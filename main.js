@@ -137,9 +137,7 @@ function animateLava(){
 		if(blob.timeout != null){
 			clearTimeout(blob.timeout);
 			blob.timeout = animateLavaBack(blob);
-		}
-		if(!(typeof blob.animation == 'object' && blob.animation.currentTime != animationDuration) 
-			&& blob.timeout == null){
+		}else if(!(typeof blob.animation == 'object' && blob.animation.currentTime != animationDuration)){
 			blob.animation = blob.animate(keyframes, animationDuration);
 			blob.animation.onfinish = () => {
 				blob.style.backgroundColor = "#77E533"
