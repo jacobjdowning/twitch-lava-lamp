@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<title>Lava Lamp</title>
+	</head>
+	<body>
+		<div style="display:none" id="auth-div">
+			<p>Authenticate with Twitch Account:</p>
+			<a id="auth-link">here</a>
+		</div>
+		<!-- START WRAPPER -->
+		<div id="wrapper" style="display:none"> 
+			<!-- START ILLUSTRATION -->
+			<div class="frame">
+				<div class="illustration">
+					<div class="lamp-top">
+						<div class="f-top"></div>
+						<div class="f-bottom"></div>
+					</div>
+					<div class="lamp-glass">
+						<div class="wrap">
+							<div class="fx"></div>
+							<div class="lava">
+								<ul>
+									<div class="top"></div>
+									<li class="drop1 anin1"></li>
+									<li class="drop2 anin2"></li>
+									<li class="drop3 anin3"></li>
+									<li class="drop4 anin4"></li>
+									<li class="drop5 anin5" style="margin-left:60%;"></li>
+									<li class="drop6 anin6" style="margin-left:5%;"></li>
+									<li class="drop6 anin7" style="margin-left:10%;"></li>
+									<li class="drop5 anin8" style="margin-left:50%;"></li>
+									<div class="bottom"></div>
+								</ul>
+							</div>
+							<div class="crystal"></div>
+						</div>
+					</div>
+					<div class="lamp-base">
+						<div class="base-glass">
+							<div class="frame-bottom"></div>
+						</div>
+						<div class="lamp-bottom">
+							<div class="frame-bottom"></div>
+							<div class="border-bottom"></div>
+						</div>
+					</div>
+		<!-- 			<div class="reflection">
+						<div class="shadow"></div>
+						<div class="light"></div>
+					</div> -->
+				</div>
+			</div>
+			<!-- END ILLUSTRATION --> 
+			
+			<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="800">
+			<defs>
+				<filter id="goo">
+					<feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+					<feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 16 -6" result="goo" />
+					<feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+				</filter>
+			</defs>
+			</svg> </div>
+			<!-- END WRAPPER -->
+
+		<script src="main.js"></script>
+	</body>
+</html>
