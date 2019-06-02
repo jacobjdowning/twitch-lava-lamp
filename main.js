@@ -8,7 +8,7 @@
 // const clientId = '9a201y5ou70sxvzs06aq4wki2k5gyq'; 
 const clientId = '1tkm4mk7k44j913wfap81tqallsm0q'
 // const redirectURI = 'http://localhost:5000';
-const redirectURI = 'http://jacobjdowning.github.io/twitch-lava-lamp'
+const redirectURI = 'http://jacobjdowning.github.io/twitch-lava-lamp/'
 const scope = 'whispers:read user_read';
 const forceVerify = 'true';
 const animationDuration = 1000;
