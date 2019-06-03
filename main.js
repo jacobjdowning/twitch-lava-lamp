@@ -3,7 +3,6 @@
 // use opaque value for message validation
 // implement cheer queue
 // handle disconnects
-// smooth animation when switching directions
 // gracefully deal with bad location hash
 
 const clientIdLocal = '9a201y5ou70sxvzs06aq4wki2k5gyq'; 
