@@ -191,7 +191,8 @@ function animateLava(){
 function setLavaBgc() {
 	var blobs = document.getElementById('wrapper')
 		.querySelectorAll('.lava .top, .lava li, .lava .bottom');
-	blobs.forEach(blob => blob.style.backgroundColor = availableColors[0]);
+	var index = Math.floor(Math.random() * availableColors.length);
+	blobs.forEach(blob => blob.style.backgroundColor = availableColors[index]);
 }
 
 function main() {
