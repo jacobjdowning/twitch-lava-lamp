@@ -260,15 +260,15 @@ svg {
 
 .lava .top {
 	width:100%;
-	height:30px;
+	height:40px;
 	margin-top:-18px;	
 }
 
 .lava .bottom {
-	width:142px;
-	height:40px;
-	bottom:-32px;
-	left: -28px;
+	width:265px;
+	height:60px;
+	bottom:-37px;
+	left: -90px;
 }
 .lava li.drop1 {
 	width: 46px;
@@ -277,6 +277,7 @@ svg {
 .lava li.drop2 {
 	width:40px;
 	height:44px;
+  /*background-color: #f9db00;*/
 }
 .lava li.drop3 {
 	width:30px;
@@ -285,6 +286,7 @@ svg {
 .lava li.drop4 {
 	width:62px;
 	height:68px;
+  /*background-color: #f9db00;*/
 }
 
 .lava li.drop5 {
@@ -294,10 +296,7 @@ svg {
 .lava li.drop6 {
 	width:16px;
 	height:20px;
-}
-
-.lava li.alt-color{
-	background-color: #f9db00;
+  /*background-color: #f9db00;*/
 }
 
 .anin1 {
