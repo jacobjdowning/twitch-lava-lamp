@@ -15,6 +15,7 @@ const forceVerify = 'true';
 const animationDuration = 1000;
 const heartbeatInterval = 60000;
 const testInterval = 3000;
+const minBitsUsed = 100;
 // const availableColors = ["#FB0000", "#FB8500", "#FBCD00", "#27C205",
 // 						 "#0055FF", "#A600FF", "#FF008F"];
 const availableColors = ["rgb(251,0,0)", "rgb(251,133,0)", "rgb(251,205,0)", "rgb(39,194,5)",
@@ -78,8 +79,12 @@ function connect(){
 function recieved(event){
 	console.log("Recieved: " + event.data);
 	var msg = JSON.parse(event.data);
-	if(msg.type == "MESSAGE"){ 
-		animateLava();
+	if(msg.type == "MESSAGE"){
+		if(msg.data.topic.includes('channel-bits-events-v2')){
+			if(JSON.parse(msg.data.message).data.bits_used >= minBitsUsed){
+				animateLava();
+			}
+		}
 	}
 }
 
@@ -110,7 +115,7 @@ function testmessage() {
   			"type": "MESSAGE",
   			"data": {
      		"topic": "channel-bits-events-v2.46024993",
-     		"message": "{\"data\":{\"user_name\":\"jwp\",\"channel_name\":\"bontakun\",\"user_id\":\"95546976\",\"channel_id\":\"46024993\",\"time\":\"2017-02-09T13:23:58.168Z\",\"chat_message\":\"cheer10000 New badge hype!\",\"bits_used\":10000,\"total_bits_used\":25000,\"context\":\"cheer\",\"badge_entitlement\":{\"new_version\":25000,\"previous_version\":10000}},\"version\":\"1.0\",\"message_type\":\"bits_event\",\"message_id\":\"8145728a4-35f0-4cf7-9dc0-f2ef24de1eb6\",\"is_anonymous\":true}"
+     		"message": "{\"data\":{\"user_name\":\"jwp\",\"channel_name\":\"bontakun\",\"user_id\":\"95546976\",\"channel_id\":\"46024993\",\"time\":\"2017-02-09T13:23:58.168Z\",\"chat_message\":\"cheer10000 New badge hype!\",\"bits_used\":100,\"total_bits_used\":25000,\"context\":\"cheer\",\"badge_entitlement\":{\"new_version\":25000,\"previous_version\":10000}},\"version\":\"1.0\",\"message_type\":\"bits_event\",\"message_id\":\"8145728a4-35f0-4cf7-9dc0-f2ef24de1eb6\",\"is_anonymous\":true}"
  	 		}
  	 	}
  	var event = new Object();
