@@ -14,6 +14,7 @@ const scope = 'bits:read user_read';
 const forceVerify = 'true';
 const animationDuration = 1000;
 const heartbeatInterval = 60000;
+const testInterval = 3000;
 // const availableColors = ["#FB0000", "#FB8500", "#FBCD00", "#27C205",
 // 						 "#0055FF", "#A600FF", "#FF008F"];
 const availableColors = ["rgb(251,0,0)", "rgb(251,133,0)", "rgb(251,205,0)", "rgb(39,194,5)",
@@ -159,7 +160,6 @@ function animateLavaBlob(blob, keyframes){
 }
 
 function animateLava(){
-	console.log('start animation');
 	var blobs = document.getElementById('wrapper')
 			.querySelectorAll('.lava .top, .lava li, .lava .bottom');
 
@@ -182,10 +182,13 @@ function main() {
 		displayAuth();
 	}else{
 		keyframPairMatrix = buildFramePairMatrix(availableColors);
-		console.log(keyframPairMatrix);
 		setLavaBgc();
 		document.getElementById('wrapper').style.display = 'initial';
-		sessionStorage.token = parseHash(document.location.hash);
-		connect();
+		if(document.location.hash == '#test'){
+			setInterval(animateLava, testInterval)
+		}else{
+			sessionStorage.token = parseHash(document.location.hash);
+			connect();
+		}
 	}
 }
