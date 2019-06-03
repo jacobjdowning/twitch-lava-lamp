@@ -260,15 +260,15 @@ svg {
 
 .lava .top {
 	width:100%;
-	height:30px;
+	height:40px;
 	margin-top:-18px;	
 }
 
 .lava .bottom {
-	width:142px;
-	height:40px;
-	bottom:-32px;
-	left: -28px;
+	width:265px;
+	height:60px;
+	bottom:-37px;
+	left: -90px;
 }
 .lava li.drop1 {
 	width: 46px;
