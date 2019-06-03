@@ -277,7 +277,6 @@ svg {
 .lava li.drop2 {
 	width:40px;
 	height:44px;
-  /*background-color: #f9db00;*/
 }
 .lava li.drop3 {
 	width:30px;
@@ -286,7 +285,6 @@ svg {
 .lava li.drop4 {
 	width:62px;
 	height:68px;
-  /*background-color: #f9db00;*/
 }
 
 .lava li.drop5 {
@@ -296,7 +294,10 @@ svg {
 .lava li.drop6 {
 	width:16px;
 	height:20px;
-  /*background-color: #f9db00;*/
+}
+
+.lava li.alt-color{
+	background-color: #f9db00;
 }
 
 .anin1 {
