@@ -296,10 +296,6 @@ svg {
 	height:20px;
 }
 
-.lava li.alt-color{
-	background-color: #f9db00;
-}
-
 .anin1 {
     -webkit-animation: drop1-nanimate 32s linear infinite;
     animation: drop1-nanimate 32s linear infinite;

@@ -1,9 +1,8 @@
 // TODO:
 // add wobble to heartbeat and reconnect
 // use opaque value for message validation
-// handle bits during animation
+// implement cheer queue
 // handle disconnects
-// use two sets of colours for lava
 // smooth animation when switching directions
 // gracefully deal with bad location hash
 
@@ -14,8 +13,12 @@ const redirectURI = 'http://jacobjdowning.github.io/twitch-lava-lamp/'
 const scope = 'bits:read user_read';
 const forceVerify = 'true';
 const animationDuration = 1000;
-const highlightDuration = 10000;
 const heartbeatInterval = 60000;
+// const availableColors = ["#FB0000", "#FB8500", "#FBCD00", "#27C205",
+// 						 "#0055FF", "#A600FF", "#FF008F"];
+const availableColors = ["rgb(251,0,0)", "rgb(251,133,0)", "rgb(251,205,0)", "rgb(39,194,5)",
+						 "rgb(0,85,255)", "rgb(166,0,255)", "rgb(255,0,143)"];
+var keyframPairMatrix;
 
 function authUrl() {
 	var isLocal = document.location.href.includes('localhost');
@@ -26,7 +29,6 @@ function authUrl() {
 			"&force_verify="+forceVerify;
 	return url;
 }
-
 
 function parseHash(hash) {
 	var marker = "#access_token=";
@@ -108,64 +110,80 @@ function displayAuth() {
 	auth.getElementsByTagName('a')[0].setAttribute('href', authUrl());
 }
 
-function animateLavaBack(blob, keyframes){
-	return setTimeout(() => {
-					blob.timeout = null;
-					blob.animate(keyframes, {duration:animationDuration, direction:"reverse"})
-					.onfinish = () => {
-						blob.style.backgroundColor = keyframes[0].backgroundColor;
-					};
-			}, highlightDuration);
+function buildFramePairMatrix(colors) {
+	var matrix = new Array(colors.length);
+	for (var i = colors.length - 1; i >= 0; i--) {
+		matrix[i] = new Array(colors.length)
+		for (var j = colors.length - 1; j >= 0; j--) {
+			matrix[i][j] = [{
+				backgroundColor: colors[i]
+			},
+			{
+				backgroundColor: colors[j]
+			}];
+		}
+	}
+	return matrix;
 }
 
-function animateLavaForw(blob, keyframes){
+function findIndexInArray(target, arr) {
+	if (typeof arr != 'object') {
+		return -1;
+	}
+	for (var i = arr.length - 1; i >= 0; i--) {
+		if (arr[i].replace(/ /g, '') == target.replace(/ /g, '')){
+			return i;
+		}
+	}
+	return -1;
+}
+
+function getRandomFramePairFrom(color){
+	var fromIndex = findIndexInArray(color, availableColors);
+	if (fromIndex == -1) {
+		console.error("getRandomFramePairFrom recieved color that is not in availableColors");
+		return keyframPairMatrix[0][0];
+	}
+	var toIndex = 0;
+	do{
+		toIndex = Math.floor(Math.random() * availableColors.length);
+	}while(toIndex == fromIndex) // Makes sure toIndex != fromIndex
+	return keyframPairMatrix[fromIndex][toIndex];
+}
+
+function animateLavaBlob(blob, keyframes){
 	blob.animation = blob.animate(keyframes, animationDuration);
 	blob.animation.onfinish = () => {
 		blob.style.backgroundColor = keyframes[1].backgroundColor;
-		if(typeof blob.timeout == 'number'){
-			clearTimeout(blob.timeout);
-		}
-		blob.timeout = animateLavaBack(blob, keyframes);
 	};
 }
 
 function animateLava(){
-	console.log("start animation");
-	mainKeys = [{
-		backgroundColor:"#e54833"
-	},
-	{
-		backgroundColor:"#77E533"
-	}];
-
-	altKeys = [{
-		backgroundColor:"#f9db00"
-	},
-	{
-		backgroundColor:"#E53377"
-	}];
-
+	console.log('start animation');
 	var blobs = document.getElementById('wrapper')
-			.querySelectorAll(".lava .top, .lava li, .lava .bottom");
+			.querySelectorAll('.lava .top, .lava li, .lava .bottom');
 
+	var keyframes = getRandomFramePairFrom(blobs[0].style.backgroundColor);
 	blobs.forEach(blob => {
-		if(blob.timeout != null){
-			clearTimeout(blob.timeout);
-			blob.timeout = animateLavaBack(blob);
-		}else if(!(typeof blob.animation == 'object' && blob.animation.currentTime != animationDuration)){
-			if(blob.classList.contains('alt-color')){
-				animateLavaForw(blob, altKeys);	
-			}else{
-				animateLavaForw(blob, mainKeys);
-			}
+		if(!(typeof blob.animation == 'object' && blob.animation.currentTime != animationDuration)){
+			animateLavaBlob(blob, keyframes);
 		}
 	});
+}
+
+function setLavaBgc() {
+	var blobs = document.getElementById('wrapper')
+		.querySelectorAll('.lava .top, .lava li, .lava .bottom');
+	blobs.forEach(blob => blob.style.backgroundColor = availableColors[0]);
 }
 
 function main() {
 	if(document.location.hash == ''){
 		displayAuth();
 	}else{
+		keyframPairMatrix = buildFramePairMatrix(availableColors);
+		console.log(keyframPairMatrix);
+		setLavaBgc();
 		document.getElementById('wrapper').style.display = 'initial';
 		sessionStorage.token = parseHash(document.location.hash);
 		connect();
