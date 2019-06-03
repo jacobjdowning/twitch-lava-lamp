@@ -7,9 +7,9 @@
 // smooth animation when switching directions
 // gracefully deal with bad location hash
 
-// const clientId = '9a201y5ou70sxvzs06aq4wki2k5gyq'; 
+const clientIdLocal = '9a201y5ou70sxvzs06aq4wki2k5gyq'; 
 const clientId = '1tkm4mk7k44j913wfap81tqallsm0q'
-// const redirectURI = 'http://localhost:5000';
+const redirectURILocal = 'http://localhost:5000';
 const redirectURI = 'http://jacobjdowning.github.io/twitch-lava-lamp/'
 const scope = 'bits:read user_read';
 const forceVerify = 'true';
@@ -18,9 +18,10 @@ const highlightDuration = 10000;
 const heartbeatInterval = 60000;
 
 function authUrl() {
+	var isLocal = document.location.href.includes('localhost');
 	var url = "https://id.twitch.tv/oauth2/authorize?response_type=token"+
-			"&client_id="+clientId+
-			"&redirect_uri="+redirectURI+
+			"&client_id="+ (isLocal ? clientIdLocal : clientId) +
+			"&redirect_uri="+ (isLocal ? redirectURILocal : redirectURI) +
 			"&scope="+scope+
 			"&force_verify="+forceVerify;
 	return url;
