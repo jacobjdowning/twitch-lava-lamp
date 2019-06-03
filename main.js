@@ -17,6 +17,10 @@ const animationDuration = 1000;
 const highlightDuration = 10000;
 const heartbeatInterval = 60000;
 
+var lastAnim;
+var lastTimeout;
+
+
 function authUrl() {
 	var url = "https://id.twitch.tv/oauth2/authorize?response_type=token"+
 			"&client_id="+clientId+
@@ -107,42 +111,24 @@ function displayAuth() {
 	auth.getElementsByTagName('a')[0].setAttribute('href', authUrl());
 }
 
-function animateLavaBack(blob, keyframes){
+function animateLavaBack(blob){
 	return setTimeout(() => {
 					blob.timeout = null;
 					blob.animate(keyframes, {duration:animationDuration, direction:"reverse"})
 					.onfinish = () => {
-						blob.style.backgroundColor = keyframes[0].backgroundColor;
+						blob.style.backgroundColor = "#e54833"
 					};
 			}, highlightDuration);
 }
 
-function animateLavaForw(blob, keyframes){
-	blob.animation = blob.animate(keyframes, animationDuration);
-	blob.animation.onfinish = () => {
-		blob.style.backgroundColor = keyframes[1].backgroundColor;
-		if(typeof blob.timeout == 'number'){
-			clearTimeout(blob.timeout);
-		}
-		blob.timeout = animateLavaBack(blob, keyframes);
-	};
-}
-
 function animateLava(){
 	console.log("start animation");
-	mainKeys = [{
+	keyframes = [{
 		backgroundColor:"#e54833"
 	},
 	{
 		backgroundColor:"#77E533"
-	}];
-
-	altKeys = [{
-		backgroundColor:"#f9db00"
-	},
-	{
-		backgroundColor:"#E53377"
-	}];
+	}]
 
 	var blobs = document.getElementById('wrapper')
 			.querySelectorAll(".lava .top, .lava li, .lava .bottom");
@@ -152,13 +138,23 @@ function animateLava(){
 			clearTimeout(blob.timeout);
 			blob.timeout = animateLavaBack(blob);
 		}else if(!(typeof blob.animation == 'object' && blob.animation.currentTime != animationDuration)){
-			if(blob.classList.contains('alt-color')){
-				animateLavaForw(blob, altKeys);	
-			}else{
-				animateLavaForw(blob, mainKeys);
-			}
+			blob.animation = blob.animate(keyframes, animationDuration);
+			blob.animation.onfinish = () => {
+				blob.style.backgroundColor = pickRandomColor()
+				if(typeof blob.timeout == 'number'){
+					clearTimeout(blob.timeout);
+				}
+				// blob.timeout = animateLavaBack(blob);
+			};
 		}
 	});
+}
+
+function pickRandomColor(){
+	colors = ["#FB0000", "#FB8500", "#FBCD00", "#27C205", "#0055FF", "#A600FF", "#FF008F"]
+	var ranNum = Math.floor(Math.random() * Math.floor(7))
+	backgroundColor = colors[ranNum]
+	return backgroundColor;
 }
 
 function main() {
