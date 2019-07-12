@@ -2,7 +2,6 @@
 // add wobble to heartbeat and reconnect
 // use opaque value for message validation
 // implement cheer queue
-// handle disconnects
 // gracefully deal with bad location hash
 
 const clientIdLocal = '9a201y5ou70sxvzs06aq4wki2k5gyq'; 
@@ -20,6 +19,8 @@ const minBitsUsed = 100;
 const availableColors = ["rgb(251,0,0)", "rgb(251,133,0)", "rgb(251,205,0)", "rgb(39,194,5)",
 						 "rgb(0,85,255)", "rgb(166,0,255)", "rgb(255,0,143)"];
 var keyframPairMatrix;
+let heartbeathealthy = true;
+let backoff = 1000;
 
 function authUrl() {
 	var isLocal = document.location.href.includes('localhost');
@@ -64,7 +65,8 @@ function connect(){
 	var fetched = Promise.all([promiseSocket('wss://pubsub-edge.twitch.tv'),
 				 				findChannel()]);
 	fetched.then((results) => {
-		results[0].onmessage = recieved;
+		backoff = 1000;
+		results[0].onmessage = (event) => recieved(event, results[0]);
 		console.log("Sent: " + heartbeat(results[0]));
 		setInterval(() => heartbeat(results[0]), heartbeatInterval)
 
@@ -72,10 +74,22 @@ function connect(){
 			listen(json._id, results[0]);
 		})
 	})
-	.catch(err=>console.log(err));
+	.catch(err=>{
+		backoff = backoff * 2;
+		if(backoff > 2 * 60 * 1000){
+			backoff = 2 * 60 * 1000;
+		}
+		setTimeout(connect, backoff)
+		console.log(err)
+	});
 }
 
-function recieved(event){
+function reconnect(socket) {
+	socket.close();
+	connect();
+}
+
+function recieved(event, socket){
 	console.log("Recieved: " + event.data);
 	var msg = JSON.parse(event.data);
 	if(msg.type == "MESSAGE"){
@@ -84,15 +98,24 @@ function recieved(event){
 				animateLava();
 			}
 		}
+	} else if (msg.type == "PONG") {
+		heartbeathealthy = true;
+	} else if (msg.type == "RECONNECT") {
+		reconnect(socket);
 	}
 }
 
 function heartbeat(socket) {
+	if(heartbeathealthy == false){
+		reconnect(socket);
+		return;
+	}
 	var message = {
 		type: 'PING'
 	};
 	var jsons = JSON.stringify(message);
 	socket.send(jsons);
+	heartbeathealthy = false;
 	return jsons
 }
 
